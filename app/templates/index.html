@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
 
+{% for image in images %}
 
+    <p>{{ image.filename }} | {{ image.created_date }}</p>
+    <img src="{{ url_for('return_pic', filename='test.png') }} "/>
+
+{% endfor %}
 
 {% endblock %}
