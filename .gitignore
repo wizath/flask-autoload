@@ -45,6 +45,7 @@ coverage.xml
 *,cover
 .hypothesis/
 .idea/
+db_repository/
 
 # Translations
 *.mo
