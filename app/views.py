@@ -10,7 +10,7 @@ import os, datetime
 @app.route('/index')
 @app.route('/index/<int:page>')
 def index(page=1):
-    query = models.Image.query.paginate(page, 10, False).items
+    query = models.Image.query.paginate(page, 3, False)
     return render_template('index.html', images=query)
 
 
