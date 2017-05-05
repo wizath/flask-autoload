@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, request, redirect, flash, url_for
+from flask import render_template, request, redirect, flash, url_for, send_from_directory
 from config import ALLOWED_EXTENSIONS
 from werkzeug.utils import secure_filename
 from app import models, db
@@ -8,8 +8,10 @@ import os, datetime
 
 @app.route('/')
 @app.route('/index')
-def index():
-    return render_template('index.html')
+@app.route('/index/<int:page>')
+def index(page=1):
+    query = models.Image.query.paginate(page, 10, False).items
+    return render_template('index.html', images=query)
 
 
 def allowed_file(filename):
@@ -44,5 +46,10 @@ def upload_file():
             return redirect(url_for('index'))
     else:
         return render_template('upload.html')
+
+
+@app.route('/image/<filename>')
+def return_pic(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
