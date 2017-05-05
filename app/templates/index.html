@@ -1,16 +1,37 @@
 {% extends "base.html" %}
 {% block content %}
 
-{% for image in images.items %}
+<script type="text/javascript">
 
-    <p>{{ image.filename }} | {{ image.created_date }}</p>
-    <img src="{{ url_for('return_pic', filename='test.png') }} "/>
+    var requested = false;
 
-{% endfor %}
+    $(window).scroll(function() {
 
-<div>
-{% if images.has_prev %}<a href="{{ url_for('index', page=images.prev_num) }}">&lt;&lt; Newer images</a> {% else %} &lt;&lt; Newer images{% endif %} |
-{% if images.has_next %}<a href="{{ url_for('index', page=images.next_num) }}">Older images &gt;&gt;</a> {% else %} Older images &gt;&gt;{% endif %}
+        var wrap = document.getElementById('wrap');
+        var contentHeight = wrap.offsetHeight;
+        var yOffset = window.pageYOffset;
+        var y = yOffset + window.innerHeight;
+
+        if (y >= contentHeight && !requested) {
+            alert('aaa');
+            requested = true;
+        }
+
+    });
+</script>
+
+<div id="wrap">
+    {% for image in images.items %}
+
+        <p>{{ image.filename }} | {{ image.created_date }}</p>
+        <img src="{{ url_for('return_pic', filename='test.png') }} "/>
+
+    {% endfor %}
+
+    <div>
+    {% if images.has_prev %}<a href="{{ url_for('index', page=images.prev_num) }}">&lt;&lt; Newer images</a> {% else %} &lt;&lt; Newer images{% endif %} |
+    {% if images.has_next %}<a href="{{ url_for('index', page=images.next_num) }}">Older images &gt;&gt;</a> {% else %} Older images &gt;&gt;{% endif %}
+    </div>
 </div>
 
 {% endblock %}
