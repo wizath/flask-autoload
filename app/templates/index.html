@@ -1,25 +1,42 @@
 {% extends "base.html" %}
-{% block content %}
 
+{% block script %}
 <script type="text/javascript">
-
-    var requested = false;
+$(document).ready(function() {
+    var currentPage = 1;
 
     $(window).scroll(function() {
 
-        var wrap = document.getElementById('wrap');
-        var contentHeight = wrap.offsetHeight;
-        var yOffset = window.pageYOffset;
-        var y = yOffset + window.innerHeight;
-
-        if (y >= contentHeight && !requested) {
-            alert('aaa');
-            requested = true;
+        if ($(window).scrollTop() == $(document).height() - $(window).height())
+        {
+            currentPage += 1;
+            loadPageData(currentPage);
         }
 
-    });
-</script>
+        function loadPageData(currentPageNumber) {
+				$.ajax({
+					url: 'getpage',
+					method: 'post',
+					dataType: "json",
+					data: {
+						pageNumber: currentPageNumber,
+						pageSize: 5
+					},
+					success: function(data) {
+						console.log(data);
+					},
+					error: function(err) {
+						alert(err);
+					}
+				});
+			}
 
+    });
+});
+</script>
+{% endblock %}
+
+{% block content %}
 <div id="wrap">
     {% for image in images.items %}
 
