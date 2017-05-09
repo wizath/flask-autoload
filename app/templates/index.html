@@ -1,16 +1,58 @@
 {% extends "base.html" %}
+
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function() {
+    var currentPage = 1;
+
+    $(window).scroll(function() {
+
+        if ($(window).scrollTop() == $(document).height() - $(window).height())
+        {
+            currentPage += 1;
+            loadPageData(currentPage);
+        }
+
+        function loadPageData(currentPageNumber) {
+				$.ajax({
+					url: 'getpage',
+					method: 'post',
+					dataType: "json",
+					data: {
+						pageNumber: currentPageNumber,
+						pageSize: 5
+					},
+					success: function(data) {
+						data.forEach(function(img)
+						{
+						    $('#wrap').append($('<p>', {text: img.filename.concat(' | ', img.date)}));
+                            $('#wrap').append($('<img>', {src: img.url}));
+                        });
+					},
+					error: function(err) {
+						alert(err);
+					}
+				});
+			}
+
+    });
+});
+</script>
+{% endblock %}
+
 {% block content %}
+<div id="wrap">
+    {% for image in images.items %}
 
-{% for image in images.items %}
+        <p>{{ image.filename }} | {{ image.created_date }}</p>
+        <img src="{{ url_for('return_pic', filename='test.png') }} "/>
 
-    <p>{{ image.filename }} | {{ image.created_date }}</p>
-    <img src="{{ url_for('return_pic', filename='test.png') }} "/>
+    {% endfor %}
 
-{% endfor %}
-
-<div>
-{% if images.has_prev %}<a href="{{ url_for('index', page=images.prev_num) }}">&lt;&lt; Newer images</a> {% else %} &lt;&lt; Newer images{% endif %} |
-{% if images.has_next %}<a href="{{ url_for('index', page=images.next_num) }}">Older images &gt;&gt;</a> {% else %} Older images &gt;&gt;{% endif %}
+    <div>
+    {% if images.has_prev %}<a href="{{ url_for('index', page=images.prev_num) }}">&lt;&lt; Newer images</a> {% else %} &lt;&lt; Newer images{% endif %} |
+    {% if images.has_next %}<a href="{{ url_for('index', page=images.next_num) }}">Older images &gt;&gt;</a> {% else %} Older images &gt;&gt;{% endif %}
+    </div>
 </div>
 
 {% endblock %}

@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, request, redirect, flash, url_for, send_from_directory
+from flask import render_template, request, redirect, flash, url_for, send_from_directory, jsonify
 from config import ALLOWED_EXTENSIONS
 from werkzeug.utils import secure_filename
 from app import models, db
@@ -53,3 +53,14 @@ def return_pic(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
+@app.route('/getpage', methods=['POST'])
+def get_page():
+    page = int(request.form.get('pageNumber', 0))
+    size = int(request.form.get('pageSize', 0))
+    query = models.Image.query.paginate(page, 3, False)
+    data = [
+        {'url': url_for('return_pic', filename=img.filename),
+         'filename': img.filename,
+         'date': img.created_date} for img in query.items]
+
+    return jsonify(data)
