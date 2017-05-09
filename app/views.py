@@ -58,4 +58,9 @@ def get_page():
     page = int(request.form.get('pageNumber', 0))
     size = int(request.form.get('pageSize', 0))
     query = models.Image.query.paginate(page, 3, False)
-    return jsonify([url_for('return_pic', filename=img.filename) for img in query.items])
+    data = [
+        {'url': url_for('return_pic', filename=img.filename),
+         'filename': img.filename,
+         'date': img.created_date} for img in query.items]
+
+    return jsonify(data)

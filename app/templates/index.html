@@ -23,7 +23,11 @@ $(document).ready(function() {
 						pageSize: 5
 					},
 					success: function(data) {
-						console.log(data);
+						data.forEach(function(img)
+						{
+						    $('#wrap').append($('<p>', {text: img.filename.concat(' | ', img.date)}));
+                            $('#wrap').append($('<img>', {src: img.url}));
+                        });
 					},
 					error: function(err) {
 						alert(err);
